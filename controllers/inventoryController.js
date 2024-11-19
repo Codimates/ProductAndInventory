@@ -22,7 +22,7 @@ const generateUniqueId = () => {
 // Post inventory
 const createInventory = async (req, res) => {
     try {
-        const { brand_name, model_name, stock_level, price, description } = req.body;
+        const { brand_name, model_name, stock_level, price, ram,processor,graphics_card,special_offer} = req.body;
 
         // Generate unique IDs for inventory_id and product_id
         const inventory_id = generateUniqueId();
@@ -36,12 +36,10 @@ const createInventory = async (req, res) => {
             model_name,
             stock_level,
             price,
-            description: {
-                ram: description.ram,
-                processor: description.processor,
-                graphics_card: description.graphics_card,
-                special_offer: description.special_offer || null
-            },
+            ram,
+            processor,
+            graphics_card,
+            special_offer: special_offer || false,
             addsite: false
         });
 
@@ -53,6 +51,40 @@ const createInventory = async (req, res) => {
     }
 };
 
+const searchorder = async (req, res) => {
+    try {
+      // Extract the fields sent in the request body
+      const { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer } = req.body;
+  
+      // Build the query object dynamically
+      const query = {};
+    if (brand_name) query.brand_name = { $regex: new RegExp(brand_name, 'i') }; // Case-insensitive match
+    if (model_name) query.model_name = { $regex: new RegExp(model_name, 'i') }; // Case-insensitive match
+    if (stock_level) query.stock_level = parseInt(stock_level);
+    if (price) query.price = parseFloat(price);
+    if (ram) query.ram = { $regex: new RegExp(ram, 'i') }; // Case-insensitive match
+    if (processor) query.processor = { $regex: new RegExp(processor, 'i') }; // Case-insensitive match
+    if (graphics_card) query.graphics_card = { $regex: new RegExp(graphics_card, 'i') }; // Case-insensitive match
+    if (special_offer) query.special_offer = special_offer;
+
+      // Query the database
+      const findInventory = await Inventory.find(query);
+  
+      // Check if any results were found
+      if (findInventory.length === 0) {
+        return res.status(404).json({ message: 'No matching inventory found' });
+      }
+  
+      // Return the matching results
+      res.status(200).json({ message: 'Matching inventory found', inventory: findInventory });
+    } catch (error) {
+      // Handle errors and send an appropriate response
+      res.status(500).json({ message: 'Error searching inventory', error: error.message });
+    }
+  };
+  
+
 module.exports = {
-    createInventory
+    createInventory,
+    searchorder,
 };
