@@ -21,34 +21,33 @@ const generateUniqueId = () => {
 
 // Post inventory
 const createInventory = async (req, res) => {
-    try {
-        const { brand_name, model_name, stock_level, price, ram,processor,graphics_card,special_offer} = req.body;
+  try {
+    const { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer, images } = req.body;
 
-        // Generate unique IDs for inventory_id and product_id
-        const inventory_id = generateUniqueId();
-        const product_id = generateUniqueId();
+    const inventory_id = generateUniqueId();
+    const product_id = generateUniqueId();
 
-        // Create a new inventory document with description fields
-        const newInventory = new Inventory({
-            inventory_id,
-            product_id,
-            brand_name,
-            model_name,
-            stock_level,
-            price,
-            ram,
-            processor,
-            graphics_card,
-            special_offer: special_offer || false,
-            addsite: false
-        });
+    
 
-        // Save the document to the database
-        const savedInventory = await newInventory.save();
-        res.status(201).json({ message: 'Inventory created successfully', inventory: savedInventory });
-    } catch (error) {
-        res.status(500).json({ message: 'Error creating inventory', error: error.message });
-    }
+    const newInventory = new Inventory({
+      inventory_id,
+      product_id,
+      brand_name,
+      model_name,
+      stock_level,
+      price,
+      ram,
+      processor,
+      graphics_card,
+      special_offer: special_offer || false,
+      images ,
+    });
+
+    const savedInventory = await newInventory.save();
+    res.status(201).json({ message: "Inventory created successfully", inventory: savedInventory });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating inventory", error: error.message });
+  }
 };
 
 const searchorder = async (req, res) => {
