@@ -41,11 +41,17 @@ const inventorySchema = new mongoose.Schema(
     special_offer: {
       type: String,
       default: null, // Optional field, can have a default value if no offer is available
+    }, 
+    images:{
+      type: String,
+      required: false
+      
     },
     addsite: {
       type: Boolean,
       default: false,
     },
+   
   },
   { timestamps: true }
 );
