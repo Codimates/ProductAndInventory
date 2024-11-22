@@ -42,10 +42,9 @@ const inventorySchema = new mongoose.Schema(
       type: String,
       default: null, // Optional field, can have a default value if no offer is available
     }, 
-    images:{
-      type: String,
-      required: false
-      
+    images: {
+      type: [String], // Array of strings to store multiple image URLs or paths
+      required: false, // Optional field
     },
     addsite: {
       type: Boolean,
