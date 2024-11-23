@@ -20,9 +20,12 @@ const upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, Date.now().toString() + path.extname(file.originalname));
+      cb(null, `${Date.now().toString()}-${file.originalname}`);
     },
   }),
+  limits: {
+    files: 3 // Limit to 3 files
+  }
 });
 
 module.exports = upload;
