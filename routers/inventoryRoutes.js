@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
-
+const upload = require('../helpers/upload');
 
 // Updated CORS configuration
 router.use(
@@ -21,7 +21,7 @@ router.use(
 const { createInventory,searchorder, getInventory } = require('../controllers/inventoryController');
 
 
-router.post('/create', createInventory)
+router.post('/create', upload.single('images'),createInventory)
 router.post('/search', searchorder)
 router.get('/getalllaps',getInventory)
 
