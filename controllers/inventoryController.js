@@ -81,9 +81,20 @@ const searchorder = async (req, res) => {
       res.status(500).json({ message: 'Error searching inventory', error: error.message });
     }
   };
+
+  //get all inventory
+const getInventory = async (req, res) => {
+    try {
+        const inventory = await Inventory.find();
+        res.status(200).json(inventory);
+    } catch (error) {
+        res.status(500).json({ message: "Error getting inventory", error: error.message });
+    }
+}
   
 
 module.exports = {
     createInventory,
     searchorder,
+    getInventory
 };
