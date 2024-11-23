@@ -18,9 +18,11 @@ router.use(
     })
 );
 
-const { createInventory,searchorder } = require('../controllers/inventoryController')
+const { createInventory,searchorder, getInventory } = require('../controllers/inventoryController');
+
 
 router.post('/create', createInventory)
 router.post('/search', searchorder)
+router.get('/getalllaps',getInventory)
 
 module.exports = router;
