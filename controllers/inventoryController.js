@@ -19,19 +19,15 @@ const generateUniqueId = () => {
     return uniqueId;
 };
 
-// Post inventory
+// Create inventory
 const createInventory = async (req, res) => {
   try {
-    const { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer, images } = req.body;
+    // Check if file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
 
-    const inventory_id = generateUniqueId();
-    const product_id = generateUniqueId();
-
-    
-
-    const newInventory = new Inventory({
-      inventory_id,
-      product_id,
+    const {
       brand_name,
       model_name,
       stock_level,
@@ -39,14 +35,45 @@ const createInventory = async (req, res) => {
       ram,
       processor,
       graphics_card,
-      special_offer: special_offer || false,
-      images ,
+      special_offer
+    } = req.body;
+
+    // Validate required fields
+    if (!brand_name || !model_name || !stock_level || !price || !ram || !processor || !graphics_card) {
+      return res.status(400).json({ message: "All required fields must be provided" });
+    }
+
+    const fileKey = req.file.key;
+    const cvUrl = `https://application-mergx.s3.ap-south-1.amazonaws.com/${fileKey}`;
+
+    const inventory_id = generateUniqueId();
+    const product_id = generateUniqueId();
+
+    const newInventory = new Inventory({
+      inventory_id,
+      product_id,
+      brand_name,
+      model_name,
+      stock_level: parseInt(stock_level),
+      price: parseFloat(price),
+      ram,
+      processor,
+      graphics_card,
+      special_offer: special_offer === 'true',
+      images: cvUrl,
     });
 
     const savedInventory = await newInventory.save();
-    res.status(201).json({ message: "Inventory created successfully", inventory: savedInventory });
+    res.status(201).json({
+      message: "Inventory created successfully",
+      inventory: savedInventory
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error creating inventory", error: error.message });
+    console.error("Error creating inventory:", error);
+    res.status(500).json({
+      message: "Error creating inventory",
+      error: error.message
+    });
   }
 };
 
