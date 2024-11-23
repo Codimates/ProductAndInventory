@@ -18,9 +18,10 @@ router.use(
     })
 );
 
-const { createBrand } = require('../controllers/brandController')
+const { createBrand, getBrands } = require('../controllers/brandController')
 
 router.post('/create', createBrand)
+router.get('/getallbrands', getBrands)
 
 
 module.exports = router;
