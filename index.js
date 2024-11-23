@@ -12,11 +12,12 @@ mongoose
   .catch((err) => console.log('Database not connected', err));
 
 // Middleware
-app.use(express.json()); // For parsing application/json
-app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+app.use(express.json({ limit: '3mb' }));
+app.use(express.urlencoded({ limit: '3mb', extended: false })); // For parsing application/x-www-form-urlencoded
 
 // Routers
 app.use('/', require('./routers/inventoryRoutes'))
+app.use('/brand', require('./routers/brandRoutes'))
 
 const port = 4002;
 
