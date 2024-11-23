@@ -22,9 +22,13 @@ const generateUniqueId = () => {
 // Create inventory
 const createInventory = async (req, res) => {
   try {
-    // Check if file was uploaded
-    if (!req.file) {
-      return res.status(400).json({ message: "No image file provided" });
+    // Check if files were uploaded
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "At least one image file is required" });
+    }
+
+    if (req.files.length > 3) {
+      return res.status(400).json({ message: "Maximum 3 images allowed" });
     }
 
     const {
@@ -43,8 +47,10 @@ const createInventory = async (req, res) => {
       return res.status(400).json({ message: "All required fields must be provided" });
     }
 
-    const fileKey = req.file.key;
-    const cvUrl = `https://application-mergx.s3.ap-south-1.amazonaws.com/${fileKey}`;
+    // Get URLs for all uploaded images
+    const imageUrls = req.files.map(file => 
+      `https://application-mergx.s3.ap-south-1.amazonaws.com/${file.key}`
+    );
 
     const inventory_id = generateUniqueId();
     const product_id = generateUniqueId();
@@ -60,7 +66,7 @@ const createInventory = async (req, res) => {
       processor,
       graphics_card,
       special_offer: special_offer === 'true',
-      images: cvUrl,
+      images: imageUrls,
     });
 
     const savedInventory = await newInventory.save();
