@@ -25,8 +25,28 @@ const getBrands = async (req, res) => {
     }
 };
 
+//delete
+const deleteBrand = async (req,res) =>{
+    const brandId = req.params.brandId;
+    try {
+        const brand = await Brand.findById(brandId);
+
+        if (!brand){
+            return res.status(400).json({ error: 'Brand not found'})
+        }
+        //delete the Brand
+        await Brand.findByIdAndDelete(brandId);
+
+        res.status(200).json({ message: 'Brand deleted successfully'})
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ error: 'Failed to delete brand. Please try again later.' });
+    }
+}
+
 module.exports = {
     createBrand,
-    getBrands
+    getBrands,
+    deleteBrand
 
 }
