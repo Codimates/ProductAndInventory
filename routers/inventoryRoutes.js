@@ -18,11 +18,14 @@ router.use(
     })
 );
 
-const { createInventory,searchorder, getInventory } = require('../controllers/inventoryController');
+const { createInventory,searchorder, getInventory, updateInventory, addsite, getAddsiteIsTrue } = require('../controllers/inventoryController');
 
 
 router.post('/create', upload.array('images',3),createInventory)
 router.post('/search', searchorder)
 router.get('/getalllaps',getInventory)
+router.put('/updateinventory/:inventory_id',updateInventory)
+router.put('/addsite/:inventory_id',addsite)
+router.get('/getaddsiteistrue',getAddsiteIsTrue)
 
 module.exports = router;
