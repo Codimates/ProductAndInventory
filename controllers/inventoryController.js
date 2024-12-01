@@ -124,10 +124,72 @@ const getInventory = async (req, res) => {
         res.status(500).json({ message: "Error getting inventory", error: error.message });
     }
 }
+
+//updaten inventory
+const updateInventory = async (req, res) => {
+  const { inventory_id } = req.params;
+  const { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer } = req.body;
+  
+  try {
+    const inventory = await Inventory.findById(inventory_id);
+    if (!inventory) {
+      return res.status(404).json({ message: 'Inventory not found' });
+    }
+    
+    const updatedInventory = await Inventory.findByIdAndUpdate(
+      inventory_id,  // Use inventory_id instead of inventoryId
+      { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer }, 
+      { new: true }
+    );
+    
+    res.status(200).json({ message: 'Inventory updated successfully', inventory: updatedInventory });
+
+  } catch (error) {
+    console.error('Error updating inventory:', error);
+    res.status(500).json({ error: 'Failed to update inventory. Please try again later.' });
+  }
+}
+
+//update addsite
+const addsite = async (req, res) => {
+  const {inventory_id} = req.params;
+  const {addsite} = req.body;
+  try {
+    const inventory = await Inventory.findById(inventory_id);
+    if (!inventory) {
+      return res.status(404).json({ message: 'Inventory not found' });
+    }
+
+    const addsitenow = await Inventory.findByIdAndUpdate(
+      inventory_id,
+      {addsite},
+      {new: true}
+    );
+
+    res.status(200).json({ message: 'Site added successfully', inventory: addsitenow });
+  } catch (error) {
+    console.error('Error updating site:', error);
+    res.status(500).json({ error: 'Failed to update site. Please try again later.' });
+  }
+}
+
+//get inventory addsite is true
+const getAddsiteIsTrue = async (req, res) => {
+  try {
+    const inventory = await Inventory.find({addsite: true});
+    res.status(200).json(inventory);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting inventory", error: error.message });
+  }
+}
+
   
 
 module.exports = {
     createInventory,
     searchorder,
-    getInventory
+    getInventory,
+    updateInventory,
+    addsite,
+    getAddsiteIsTrue
 };
