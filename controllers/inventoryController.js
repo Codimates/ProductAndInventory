@@ -183,6 +183,23 @@ const getAddsiteIsTrue = async (req, res) => {
   }
 }
 
+//delete inventory
+const deleteInventory = async (req, res) => {
+  const { inventory_id } = req.params;
+  try {
+    const inventory = await Inventory.findById(inventory_id);
+    if (!inventory) {
+      return res.status(404).json({ message: 'Inventory not found' });
+    }
+
+    await Inventory.findByIdAndDelete(inventory_id);
+    res.status(200).json({ message: 'Inventory deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting inventory:', error);
+    res.status(500).json({ error: 'Failed to delete inventory. Please try again later.' });
+  }
+}
+
   
 
 module.exports = {
@@ -191,5 +208,6 @@ module.exports = {
     getInventory,
     updateInventory,
     addsite,
-    getAddsiteIsTrue
+    getAddsiteIsTrue,
+    deleteInventory
 };
