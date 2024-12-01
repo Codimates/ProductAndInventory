@@ -44,9 +44,36 @@ const deleteBrand = async (req,res) =>{
     }
 }
 
+// Update a brand
+const updateBrand = async (req, res) => {
+    try {
+        const { brandId } = req.params;
+        const { brandname, brandlogo } = req.body;
+
+        // Check if the brand exists
+        const brand = await Brand.findById(brandId);
+        if (!brand) {
+            return res.status(400).json({ error: 'Brand not found' });
+        }
+
+        // Update the brand
+        const updatedBrand = await Brand.findByIdAndUpdate(
+            brandId,
+            { brandname, brandlogo },
+            { new: true } // Return the updated brand
+        );
+
+        res.status(200).json({ message: 'Brand updated successfully', brand: updatedBrand });
+    } catch (error) {
+        console.error('Error updating brand:', error);
+        res.status(500).json({ error: 'Failed to update brand. Please try again later.' });
+    }
+};
+
 module.exports = {
     createBrand,
     getBrands,
-    deleteBrand
+    deleteBrand,
+    updateBrand
 
 }
