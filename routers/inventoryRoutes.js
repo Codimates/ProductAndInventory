@@ -8,7 +8,7 @@ router.use(
     cors({
         credentials: true,
         origin: (origin, callback) => {
-            const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+            const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://141.144.204.231:3000', /^http:\/\/.*:3000$/, /^http:\/\/.*:3001$/, '/ead3/'];
             if (allowedOrigins.includes(origin) || !origin) {
                 callback(null, true);
             } else {
