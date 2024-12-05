@@ -18,7 +18,7 @@ router.use(
     })
 );
 
-const { createInventory,searchorder, getInventory, updateInventory, addsite, getAddsiteIsTrue, deleteInventory } = require('../controllers/inventoryController');
+const { createInventory,searchorder, getInventory, updateInventory, addsite, getAddsiteIsTrue, deleteInventory, getInventoryById } = require('../controllers/inventoryController');
 
 
 router.post('/create', upload.array('images',3),createInventory)
@@ -28,5 +28,6 @@ router.put('/updateinventory/:inventory_id',updateInventory)
 router.put('/addsite/:inventory_id',addsite)
 router.get('/getaddsiteistrue',getAddsiteIsTrue)
 router.delete('/deleteinventory/:inventory_id', deleteInventory)
+router.get('/getinventorybyid/:inventory_id', getInventoryById)
 
 module.exports = router;
