@@ -200,7 +200,20 @@ const deleteInventory = async (req, res) => {
   }
 }
 
-  
+//getbyid
+const getInventoryById = async (req, res) => {
+  const { inventory_id } = req.params;
+  try {
+    const inventory = await Inventory.findById(inventory_id);
+    if (!inventory) {
+      return res.status(404).json({ message: 'Inventory not found' });
+    }
+    res.status(200).json(inventory);
+  } catch (error) {
+    console.error('Error getting inventory:', error);
+    res.status(500).json({ error: 'Failed to get inventory. Please try again later.' });
+  }
+}
 
 module.exports = {
     createInventory,
@@ -209,5 +222,6 @@ module.exports = {
     updateInventory,
     addsite,
     getAddsiteIsTrue,
-    deleteInventory
+    deleteInventory,
+    getInventoryById
 };
