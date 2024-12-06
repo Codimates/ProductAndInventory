@@ -128,27 +128,59 @@ const getInventory = async (req, res) => {
 //updaten inventory
 const updateInventory = async (req, res) => {
   const { inventory_id } = req.params;
-  const { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer } = req.body;
   
   try {
     const inventory = await Inventory.findById(inventory_id);
     if (!inventory) {
       return res.status(404).json({ message: 'Inventory not found' });
     }
-    
+
+    // Parse existing and deleted images
+    const existingImages = JSON.parse(req.body.existingImages || '[]');
+    const imagesToDelete = JSON.parse(req.body.imagesToDelete || '[]');
+
+    // Get URLs for newly uploaded images
+    const newImageUrls = req.files ? req.files.map(file => 
+      `https://application-mergx.s3.ap-south-1.amazonaws.com/${file.key}`
+    ) : [];
+
+    // Remove deleted images from existing images
+    const filteredExistingImages = existingImages.filter(
+      image => !imagesToDelete.includes(image)
+    );
+
+    // Combine existing and new images
+    const updatedImages = [...filteredExistingImages, ...newImageUrls];
+
+    // Update inventory item
     const updatedInventory = await Inventory.findByIdAndUpdate(
-      inventory_id,  // Use inventory_id instead of inventoryId
-      { brand_name, model_name, stock_level, price, ram, processor, graphics_card, special_offer }, 
+      inventory_id,
+      {
+        brand_name: req.body.brand_name,
+        model_name: req.body.model_name,
+        stock_level: parseInt(req.body.stock_level),
+        price: parseFloat(req.body.price),
+        ram: req.body.ram,
+        processor: req.body.processor,
+        graphics_card: req.body.graphics_card,
+        special_offer: req.body.special_offer === 'true',
+        images: updatedImages
+      }, 
       { new: true }
     );
     
-    res.status(200).json({ message: 'Inventory updated successfully', inventory: updatedInventory });
+    res.status(200).json({ 
+      message: 'Inventory updated successfully', 
+      inventory: updatedInventory 
+    });
 
   } catch (error) {
     console.error('Error updating inventory:', error);
-    res.status(500).json({ error: 'Failed to update inventory. Please try again later.' });
+    res.status(500).json({ 
+      error: 'Failed to update inventory. Please try again later.' 
+    });
   }
-}
+};
 
 //update addsite
 const addsite = async (req, res) => {
