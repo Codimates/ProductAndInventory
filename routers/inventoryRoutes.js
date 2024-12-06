@@ -24,7 +24,7 @@ const { createInventory,searchorder, getInventory, updateInventory, addsite, get
 router.post('/create', upload.array('images',3),createInventory)
 router.post('/search', searchorder)
 router.get('/getalllaps',getInventory)
-router.put('/updateinventory/:inventory_id',updateInventory)
+router.put('/updateinventory/:inventory_id', upload.array('images', 3), updateInventory)
 router.put('/addsite/:inventory_id',addsite)
 router.get('/getaddsiteistrue',getAddsiteIsTrue)
 router.delete('/deleteinventory/:inventory_id', deleteInventory)
