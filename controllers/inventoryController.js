@@ -247,6 +247,42 @@ const getInventoryById = async (req, res) => {
   }
 }
 
+const reduceStockLevel = async (req, res) => {
+  const { inventory_id } = req.params;
+  const { quantity } = req.body;
+
+  try {
+    const inventory = await Inventory.findById(inventory_id);
+    if (!inventory) {
+      return res.status(404).json({ message: 'Inventory not found' });
+    }
+
+    const newStockLevel = inventory.stock_level - quantity;
+    if (newStockLevel < 0) {
+      return res.status(400).json({ 
+        message: 'Insufficient stock',
+        currentStock: inventory.stock_level 
+      });
+    }
+
+    const updatedInventory = await Inventory.findByIdAndUpdate(
+      inventory_id, 
+      { stock_level: newStockLevel },
+      { new: true }
+    );
+
+    res.status(200).json({ 
+      message: 'Stock level reduced successfully', 
+      inventory: updatedInventory 
+    });
+  } catch (error) {
+    console.error('Error reducing stock level:', error);
+    res.status(500).json({ 
+      error: 'Failed to reduce stock level. Please try again later.' 
+    });
+  }
+};
+
 module.exports = {
     createInventory,
     searchorder,
@@ -255,5 +291,6 @@ module.exports = {
     addsite,
     getAddsiteIsTrue,
     deleteInventory,
-    getInventoryById
+    getInventoryById,
+    reduceStockLevel
 };
